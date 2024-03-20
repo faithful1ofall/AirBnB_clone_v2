@@ -5,7 +5,6 @@ import os
 from models.user import User
 from models.base_model import BaseModel
 import pep8
-from os import environ as env
 
 
 class TestUser(unittest.TestCase):
