@@ -58,13 +58,12 @@ def do_deploy(archive_path):
     except:
         return False
 
+pack = do_pack()
 
 def deploy():
     """pack web_static content and deploy it to web servers
     """
-    
-    pack = do_pack()
-    
+      
     if not pack:
         return False
     
