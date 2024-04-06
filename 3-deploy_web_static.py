@@ -6,49 +6,40 @@ distributes an archive to the web servers
 execute: fab -f 3-deploy_web_static.py deploy -i ~/.ssh/school -u ubuntu
 """
 
-import os.path
-from fabric.api import env, local, put, run
-import time
+from fabric.operations import run, put, env, settings
+from os.path import isdir as test
 env.hosts = ["34.229.161.131", "54.89.46.50"]
-
-
-def do_pack():
-    timestr = time.strftime("%Y%m%d%H%M%S")
-    try:
-        local("mkdir -p versions")
-        local("tar -cvzf versions/web_static_{}.tgz web_static/".
-              format(timestr))
-        return ("versions/web_static_{}.tgz".format(timestr))
-    except:
-        return None
-
-
-def do_deploy(archive_path):
-    """ deploy """
-    if (os.path.isfile(archive_path) is False):
-        return False
-
-    try:
-        new_comp = archive_path.split("/")[-1]
-        new_folder = ("/data/web_static/releases/" + new_comp.split(".")[0])
-        put(archive_path, "/tmp/")
-        run("sudo mkdir -p {}".format(new_folder))
-        run("sudo tar -xzf /tmp/{} -C {}".
-            format(new_comp, new_folder))
-        run("sudo rm /tmp/{}".format(new_comp))
-        run("sudo mv {}/web_static/* {}/".format(new_folder, new_folder))
-        run("sudo rm -rf {}/web_static".format(new_folder))
-        run('sudo rm -rf /data/web_static/current')
-        run("sudo ln -s {} /data/web_static/current".format(new_folder))
-        return True
-    except:
-        return False
+env.user = 'ubuntu'
+time = local("$(date +%Y%m%d%H%M%S)")
+archive_path = "versions/web_static_{}.tgz".format(time)
+name = archive_path.split("/")[-1]
 
 
 def deploy():
+    """calls do_pack and do_deploy"""
+    do_pack()
+
+
+def do_pack():
+    """create packet"""
     try:
-        archive_address = do_pack()
-        val = do_deploy(archive_address)
-        return val
+        local("mkdir -p versions && tar -cvzf {} ./web_static"
+              .format(archive_path))
+        return name
+    except:
+        return False
+
+
+def do_deploy(archive_path):
+    """uploads to server"""
+    if not (test(archive_path)):
+        return False
+    try:
+        put(archive_path, "/tmp")
+        path = "/data/web_static/releases/".format(name.split(".")[0])
+        run("mkdir {0} && tar -xzf /tmp{1} -C {0}".format(path, name))
+        run("rm /tmp/{} && rm -rf /data/web_static/current".format(name))
+        run("ln -s {} /data/web_static/current".format(path))
+        return True
     except:
         return False
