@@ -8,9 +8,10 @@ execute: fab -f 3-deploy_web_static.py deploy -i ~/.ssh/school -u ubuntu
 
 from fabric.operations import run, put, env, settings, local
 from os.path import isdir as test
+from datetime import datetime
 env.hosts = ["34.229.161.131", "54.89.46.50"]
 env.user = 'ubuntu'
-time = local("$(date +%Y%m%d%H%M%S)")
+time = datetime.now().strftime("%Y%m%d%H%M%S")
 archive_path = "versions/web_static_{}.tgz".format(time)
 name = archive_path.split("/")[-1]
 
