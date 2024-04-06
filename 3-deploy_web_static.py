@@ -8,7 +8,7 @@ execute: fab -f 3-deploy_web_static.py deploy -i ~/.ssh/school -u ubuntu
 
 import os.path
 from fabric.api import *
-from fabric.operations import run, put, sudo
+from fabric.operations import run, put
 import time
 env.hosts = ["34.229.161.131", "54.89.46.50"]
 
