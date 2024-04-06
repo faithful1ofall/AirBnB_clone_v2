@@ -6,7 +6,7 @@ distributes an archive to the web servers
 execute: fab -f 3-deploy_web_static.py deploy -i ~/.ssh/school -u ubuntu
 """
 
-from fabric.operations import run, put, env, settings
+from fabric.operations import run, put, env, settings, local
 from os.path import isdir as test
 env.hosts = ["34.229.161.131", "54.89.46.50"]
 env.user = 'ubuntu'
