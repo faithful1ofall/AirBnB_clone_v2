@@ -34,7 +34,7 @@ class DBStorage:
         """setup __engine
         """
         self.__engine = create_engine(
-            "mysql+mysqldb://{}:{}@{}:3306/{}".format(
+            "mysql+mysqldb://{}:{}@{}:3306/{}?charset=latin1"".format(
                 env['HBNB_MYSQL_USER'],
                 env['HBNB_MYSQL_PWD'],
                 env['HBNB_MYSQL_HOST'],
