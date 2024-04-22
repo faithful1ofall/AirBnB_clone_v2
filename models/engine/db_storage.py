@@ -34,9 +34,10 @@ class DBStorage():
 
     # Execute additional SQL commands
         with self.__engine.connect() as connection:
-            connection.execute("ALTER DATABASE {} CHARACTER SET latin1 COLLATE latin1_swedish_ci".format(db))
-            connection.execute("SET default_storage_engine=InnoDB")
-
+            connection.execute("ALTER TABLE IF EXISTS states CONVERT TO CHARACTER SET DEFAULT")
+            connection.execute("ALTER TABLE IF EXISTS cities CONVERT TO CHARACTER SET DEFAULT")
+            
+            
     def close(self):
         """This closes the query"""
         self.__session.close()
